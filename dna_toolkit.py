@@ -1,6 +1,7 @@
 # DNA Toolkit file
 
 import collections
+from typing import Counter
 from structures import *
 
 #Checks sequence to make sure it is a DNA string
@@ -44,5 +45,19 @@ def gc_content_subsec(seq, k=20):
         res.append(gc_content(subseq))
     return res
 
-# def countNucFrequency(seq):
-# return dict(collections.Counter(seq))
+def translate_seq(seq, init_pos=0):
+    #translate DNA seq into aminoacid seq
+    return [dna_codons[seq[pos:pos + 3]] for pos in range(init_pos, len(seq) -2, 3)]
+
+def codon_usage(seq, aminoacid):
+    #freq of each codon encoding a given aminoacid in a DNA seq
+    temp_list = []
+    for i in range(0, len(seq) - 2, 3):
+        if dna_codons[seq[i:i +3]] == aminoacid:
+            temp_list.append(seq[i:i + 3])
+    
+    freq_dict = dict(collections.Counter(temp_list))
+    total_weight = sum(freq_dict.values())
+    for seq in freq_dict:
+        freq_dict[seq] = round(freq_dict[seq] / total_weight, 2)
+    return freq_dict
